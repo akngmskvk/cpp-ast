@@ -1,9 +1,17 @@
 #include "parser.h"
 
+#define DEBUG_FUNCTION 1
+
 Parser::Parser(string inputStr)
 {
     m_text = inputStr;
     m_index = 0;
+}
+
+void Parser::parseTest()
+{
+    getToken();
+    expression();
 }
 
 int Parser::toIntFromChar(char value)
@@ -11,8 +19,138 @@ int Parser::toIntFromChar(char value)
     return ((int)(value) - 48);
 }
 
+void Parser::expression()
+{
+#ifdef DEBUG_FUNCTION
+     cout << "Beginnig of the " << __FUNCTION__ << endl;
+#endif
+
+    term();
+    expression1();
+}
+
+void Parser::expression1()
+{
+#ifdef DEBUG_FUNCTION
+     cout << "Beginnig of the " << __FUNCTION__ << endl;
+#endif
+
+    switch (m_token.Type)
+    {
+        case Plus:
+            getToken();
+            term();
+            expression1();
+            break;
+        case Minus:
+            getToken();
+            term();
+            expression1();
+            break;
+        default:
+            break;
+    }
+}
+
+void Parser::term()
+{
+#ifdef DEBUG_FUNCTION
+     cout << "Beginnig of the " << __FUNCTION__ << endl;
+#endif
+
+    factor();
+    term1();
+}
+
+void Parser::term1()
+{
+#ifdef DEBUG_FUNCTION
+     cout << "Beginnig of the " << __FUNCTION__ << endl;
+#endif
+
+    switch (m_token.Type)
+    {
+        case Mul:
+            getToken();
+            factor();
+            term1();
+            break;
+        case Div:
+            getToken();
+            factor();
+            term1();
+            break;
+        default:
+            break;
+    }
+}
+
+void Parser::factor()
+{
+#ifdef DEBUG_FUNCTION
+     cout << "Beginnig of the " << __FUNCTION__ << endl;
+#endif
+
+    switch (m_token.Type)
+    {
+        case LeftParenthesis:
+            getToken();
+            expression();
+            match(')');
+            break;
+        case Minus:
+            getToken();
+            factor();
+            break;
+        case Number:
+            getToken();
+            break;
+        default:
+            // Unexpected input is explored
+            // TODO:
+            // Implement errow throwing mechanism
+
+            cout << __FUNCTION__ <<" Unexpected input is explored in . ERROR!" << endl;
+            break;
+    }
+}
+
+void Parser::match(char expectedValue)
+{
+#ifdef DEBUG_FUNCTION
+     cout << "Beginnig of the " << __FUNCTION__ << endl;
+#endif
+
+    if (m_text.at(m_index) == expectedValue)
+    {
+        getToken();
+    }
+    else
+    {
+        // Unexpected input is explored
+        // TODO:
+        // Implement errow throwing mechanism
+
+        cout << __FUNCTION__ <<" Unexpected input is explored in . ERROR!" << endl;
+    }
+}
+
 void Parser::getToken()
 {
+#ifdef DEBUG_FUNCTION
+     cout << "Beginnig of the " << __FUNCTION__ << endl;
+#endif
+
+     // check for end of the text
+     if (m_index == m_text.size())
+     {
+         m_token.Type = EndOfText;
+         return;
+     }
+#ifdef DEBUG_FUNCTION
+    cout << "Value in " << __FUNCTION__ << " is " << m_text.at(m_index) << endl;
+#endif
+
     // skip whitespaces
     while (isspace(m_text.at(m_index)))
     {
@@ -22,18 +160,12 @@ void Parser::getToken()
     m_token.Value = 0;
     m_token.Symbol = 0;
 
-    // check for end of the text
-    if (m_index == m_text.size())
-    {
-        m_token.Type = EndOfText;
-        return;
-    }
-
     // check if there is a digit at the current index
     if(isdigit(m_text.at(m_index)))
     {
         m_token.Type = Number;
         m_token.Value = toIntFromChar(m_text.at(m_index));
+        m_index++;
         return;
     }
 
@@ -75,7 +207,7 @@ void Parser::getToken()
         // TODO:
         // Implement errow throwing mechanism
 
-        cout << "Unexpected input is explored. ERROR!" << endl;
+        cout << __FUNCTION__ <<" Unexpected input is explored in . ERROR!" << endl;
     }
 }
 

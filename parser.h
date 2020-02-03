@@ -11,9 +11,18 @@ class Parser
 {
 public:
     Parser(string inputStr);
+    void parseTest();
 
 private:
     int toIntFromChar(char value);
+
+    void expression();
+    void expression1();
+    void term();
+    void term1();
+    void factor();
+    void match(char expectedValue);
+
     void getToken();
 
 public:
