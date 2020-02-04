@@ -24,4 +24,14 @@ struct Token
    {}
 };
 
+enum ASTNodeType
+{
+    Undefined,
+    NumberValue,
+    OperatorPlus,
+    OperatorMinus,
+    OperatorMul,
+    OperatorDiv
+};
+
 #endif // ASTDEFINES_H

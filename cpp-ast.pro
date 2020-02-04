@@ -16,9 +16,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     parser.cpp \
-    parserexception.cpp
+    parserexception.cpp \
+    astnode.cpp
 
 HEADERS += \
     astdefines.h \
     parser.h \
-    parserexception.h
+    parserexception.h \
+    astnode.h

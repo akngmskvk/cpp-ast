@@ -16,7 +16,7 @@ void test(string text)
     }
     catch (ParserException& ex)
     {
-        cout << "\"" << text << "\" -->\t NOK" << endl;
+//        cout << "\"" << text << "\" -->\t NOK" << endl;
     }
 }
 
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     test("(1+2)*(3+4)");
     test("1+(2*3)*(4+5)");
     test("1+(2*3)/4+5");
-    test("5/(4+3)/2");
+    test("5/(4+3,4)/2");
     test("1 + 2.5");
     test("125");
     test("-1");
