@@ -121,7 +121,7 @@ void Parser::match(char expectedValue)
      cout << "Beginnig of the " << __FUNCTION__ << endl;
 #endif
 
-    if (m_text.at(m_index) == expectedValue)
+    if (m_text.at(m_index-1) == expectedValue)
     {
         getToken();
     }
