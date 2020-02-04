@@ -6,13 +6,58 @@
 
 using namespace std;
 
+int evaluator(ASTNode* ast)
+{
+    if (ast == NULL)
+    {
+        cout << "Null error" << endl;
+        return -1;
+    }
+    if (ast->getNodeType() == NumberValue)
+    {
+        return ast->getNodeValue();
+    }
+    else
+    {
+        int v1 = evaluator(ast->getLeftChild());
+        int v2 = evaluator(ast->getRightChild());
+
+        switch (ast->getNodeType())
+        {
+            case OperatorPlus:
+            {
+                return v1 + v2;
+            }
+            case OperatorMinus:
+            {
+                return v1 - v2;
+            }
+            case OperatorMul:
+            {
+                return v1 * v2;
+            }
+            case OperatorDiv:
+            {
+                cout << "Div exp is " << v1 << " / " << v2 << " = " << v1/v2 << endl;
+                return v1 / v2;
+            }
+            default:
+                break;
+        }
+    }
+
+    return -1;
+}
+
 void test(string text)
 {
     Parser m_parser(text);
     try
     {
-        m_parser.parseTest();
-        cout << "\"" << text << "\" -->\t OK" << endl;
+        ASTNode* node = m_parser.parseTest();
+        cout << "\"" << text << "\" -->\t OK --> Result: " << evaluator(node) << endl;
+
+        delete node;
     }
     catch (ParserException& ex)
     {
@@ -24,7 +69,14 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    test("1+2+123+4");
+    test("4+5+7/2");
+    test("(4 + 5 * (7 - 3)) - 2");
+    test("10 + 1");
+    test("-10");
+    cout << endl;
+    cout << endl;
+
+    test("1+2+3+4");
     test("1*2*3*4");
     test("1-2-3-4");
     test("1/2/3/4");

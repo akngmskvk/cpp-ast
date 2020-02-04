@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "astdefines.h"
+#include "astnode.h"
 #include "parserexception.h"
 
 using namespace std;
@@ -12,17 +13,20 @@ class Parser
 {
 public:
     Parser(string inputStr);
-    void parseTest();
+    ASTNode* parseTest();
 
 private:
     int toIntFromChar(char value);
 
-    void expression();
-    void expression1();
-    void term();
-    void term1();
-    void factor();
+    ASTNode* expression();
+    ASTNode* expression1();
+    ASTNode* term();
+    ASTNode* term1();
+    ASTNode* factor();
     void match(char expectedValue);
+
+    ASTNode* createNode(ASTNodeType nodeType, ASTNode* leftChild, ASTNode* rightChild);
+    ASTNode* createNumberNode(int nodeValue);
 
     void getToken();
 
@@ -32,14 +36,5 @@ public:
     size_t m_index;
 
 };
-
-//class ParserException : public exception
-//{
-//public:
-//    ParserException(const string& message, int pos);
-//    int m_pos;
-//    string m_message;
-
-//};
 
 #endif // PARSER_H

@@ -8,10 +8,11 @@ Parser::Parser(string inputStr)
     m_index = 0;
 }
 
-void Parser::parseTest()
+ASTNode* Parser::parseTest()
 {
     getToken();
-    expression();
+
+    return expression();
 }
 
 int Parser::toIntFromChar(char value)
@@ -19,106 +20,145 @@ int Parser::toIntFromChar(char value)
     return ((int)(value) - 48);
 }
 
-void Parser::expression()
+ASTNode* Parser::expression()
 {
 #ifdef DEBUG_FUNCTION
      cout << "Beginnig of the " << __FUNCTION__ << endl;
 #endif
 
-    term();
-    expression1();
+    ASTNode* termNode = term();
+    ASTNode* expression1Node = expression1();
+
+    return createNode(OperatorPlus, termNode, expression1Node);
 }
 
-void Parser::expression1()
+ASTNode* Parser::expression1()
 {
 #ifdef DEBUG_FUNCTION
      cout << "Beginnig of the " << __FUNCTION__ << endl;
 #endif
+
+    ASTNode* termNode;
+    ASTNode* expression1Node;
 
     switch (m_token.Type)
     {
         case Plus:
+        {
             getToken();
-            term();
-            expression1();
-            break;
+            termNode = term();
+            expression1Node = expression1();
+
+            return createNode(OperatorPlus, expression1Node, termNode);
+        }
         case Minus:
+        {
             getToken();
-            term();
-            expression1();
-            break;
+            termNode = term();
+            expression1Node = expression1();
+
+            return createNode(OperatorMinus, expression1Node, termNode);
+        }
         default:
             break;
     }
+
+    return createNumberNode(0);
 }
 
-void Parser::term()
+ASTNode* Parser::term()
 {
 #ifdef DEBUG_FUNCTION
      cout << "Beginnig of the " << __FUNCTION__ << endl;
 #endif
 
-    factor();
-    term1();
+    ASTNode* factorNode = factor();
+    ASTNode* term1Node = term1();
+
+    return createNode(OperatorMul, factorNode, term1Node);
 }
 
-void Parser::term1()
+ASTNode* Parser::term1()
 {
 #ifdef DEBUG_FUNCTION
      cout << "Beginnig of the " << __FUNCTION__ << endl;
 #endif
+
+    ASTNode* factorNode;
+    ASTNode* term1Node;
 
     switch (m_token.Type)
     {
         case Mul:
+        {
             getToken();
-            factor();
-            term1();
-            break;
+            factorNode = factor();
+            term1Node = term1();
+
+            return createNode(OperatorMul, term1Node, factorNode);
+        }
         case Div:
+        {
             getToken();
-            factor();
-            term1();
-            break;
+            factorNode = factor();
+            term1Node = term1();
+
+            return createNode(OperatorDiv, term1Node, factorNode);
+        }
         default:
             break;
     }
+
+    return createNumberNode(1);
 }
 
-void Parser::factor()
+ASTNode* Parser::factor()
 {
 #ifdef DEBUG_FUNCTION
      cout << "Beginnig of the " << __FUNCTION__ << endl;
 #endif
 
+    ASTNode* node;
+
     switch (m_token.Type)
     {
         case LeftParenthesis:
+        {
             getToken();
-            expression();
+            node = expression();
             match(')');
-            break;
+
+            return node;
+        }
         case Minus:
+        {
             getToken();
             // negative input is explored
             throw ParserException(m_text, m_index, NegativeInput);
             factor();
             break;
+        }
         case Number:
+        {
+            int value = m_token.Value;
             getToken();
             // large input is explored
             if (m_token.Type == Number)
             {
                 throw ParserException(m_text, m_index, LargeInput);
             }
-            break;
+
+            return createNumberNode(value);
+        }
         default:
+        {
             // unexpected token is explored
 #ifdef DEBUG_FUNCTION
             cout << "Error in " << __FUNCTION__ << endl;
 #endif
             throw ParserException(m_text, m_index, UnexpectedInput);
             break;
+        }
     }
 }
 
@@ -141,6 +181,25 @@ void Parser::match(char expectedValue)
 #endif
         throw ParserException(m_text, m_index, UnexpectedInput);
     }
+}
+
+ASTNode* Parser::createNode(ASTNodeType nodeType, ASTNode *leftChild, ASTNode *rightChild)
+{
+    ASTNode* node = new ASTNode;
+    node->setNodeType(nodeType);
+    node->setLeftChild(leftChild);
+    node->setRightChild(rightChild);
+
+    return node;
+}
+
+ASTNode* Parser::createNumberNode(int nodeValue)
+{
+    ASTNode* node = new ASTNode;
+    node->setNodeType(NumberValue);
+    node->setNodeValue(nodeValue);
+
+    return node;
 }
 
 void Parser::getToken()
