@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "astdefines.h"
+#include "parserexception.h"
 
 using namespace std;
 
@@ -31,5 +32,14 @@ public:
     size_t m_index;
 
 };
+
+//class ParserException : public exception
+//{
+//public:
+//    ParserException(const string& message, int pos);
+//    int m_pos;
+//    string m_message;
+
+//};
 
 #endif // PARSER_H

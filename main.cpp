@@ -12,11 +12,11 @@ void test(string text)
     try
     {
         m_parser.parseTest();
-        cout << text << " ... OK" << endl;
+        cout << "\"" << text << "\" -->\t OK" << endl;
     }
-    catch (errc)
+    catch (ParserException& ex)
     {
-        cout << text << " ... NOK" << endl;
+        cout << "\"" << text << "\" -->\t NOK" << endl;
     }
 }
 
@@ -31,6 +31,9 @@ int main(int argc, char *argv[])
     test("1*2+3*4");
     test("1+2*3+4");
     test("   1*2,5");
+    test("(1+2)*(3+4)");
+    test("1+(2*3)*(4+5)");
+    test("1+(2*3)/4+5");
 
     return a.exec();
 }

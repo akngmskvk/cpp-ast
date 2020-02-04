@@ -1,6 +1,6 @@
 #include "parser.h"
 
-#define DEBUG_FUNCTION 1
+//#define DEBUG_FUNCTION 1
 
 Parser::Parser(string inputStr)
 {
@@ -106,11 +106,11 @@ void Parser::factor()
             getToken();
             break;
         default:
-            // Unexpected input is explored
-            // TODO:
-            // Implement errow throwing mechanism
-
-            cout << __FUNCTION__ <<" Unexpected input is explored in . ERROR!" << endl;
+            // unexpected token is explored
+#ifdef DEBUG_FUNCTION
+            cout << "Error in " << __FUNCTION__ << endl;
+#endif
+            throw ParserException(m_text, m_index);
             break;
     }
 }
@@ -127,11 +127,12 @@ void Parser::match(char expectedValue)
     }
     else
     {
-        // Unexpected input is explored
-        // TODO:
-        // Implement errow throwing mechanism
-
-        cout << __FUNCTION__ <<" Unexpected input is explored in . ERROR!" << endl;
+        // unexpected token is explored
+#ifdef DEBUG_FUNCTION
+        cout << "Error in " << __FUNCTION__ << endl;
+        cout << "Expected token \"" << expectedValue << "\" at position " << m_index << endl;
+#endif
+        throw ParserException(m_text, m_index);
     }
 }
 
@@ -147,6 +148,7 @@ void Parser::getToken()
          m_token.Type = EndOfText;
          return;
      }
+
 #ifdef DEBUG_FUNCTION
     cout << "Value in " << __FUNCTION__ << " is " << m_text.at(m_index) << endl;
 #endif
@@ -203,12 +205,10 @@ void Parser::getToken()
     }
     else
     {
-        // Unexpected input is explored
-        // TODO:
-        // Implement errow throwing mechanism
-
-        cout << __FUNCTION__ <<" Unexpected input is explored in . ERROR!" << endl;
+        // unexpected token is explored
+#ifdef DEBUG_FUNCTION
+        cout << "Error in " << __FUNCTION__ << endl;
+#endif
+        throw ParserException(m_text, m_index);
     }
 }
-
-
