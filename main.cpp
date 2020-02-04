@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int evaluator(ASTNode* ast)
+double evaluator(ASTNode* ast)
 {
     if (ast == NULL)
     {
@@ -19,8 +19,8 @@ int evaluator(ASTNode* ast)
     }
     else
     {
-        int v1 = evaluator(ast->getLeftChild());
-        int v2 = evaluator(ast->getRightChild());
+        double v1 = evaluator(ast->getLeftChild());
+        double v2 = evaluator(ast->getRightChild());
 
         switch (ast->getNodeType())
         {
@@ -38,7 +38,6 @@ int evaluator(ASTNode* ast)
             }
             case OperatorDiv:
             {
-                cout << "Div exp is " << v1 << " / " << v2 << " = " << v1/v2 << endl;
                 return v1 / v2;
             }
             default:
@@ -56,7 +55,6 @@ void test(string text)
     {
         ASTNode* node = m_parser.parseTest();
         cout << "\"" << text << "\" -->\t OK --> Result: " << evaluator(node) << endl;
-
         delete node;
     }
     catch (ParserException& ex)
