@@ -100,17 +100,24 @@ void Parser::factor()
             break;
         case Minus:
             getToken();
+            // negative input is explored
+            throw ParserException(m_text, m_index, NegativeInput);
             factor();
             break;
         case Number:
             getToken();
+            // large input is explored
+            if (m_token.Type == Number)
+            {
+                throw ParserException(m_text, m_index, LargeInput);
+            }
             break;
         default:
             // unexpected token is explored
 #ifdef DEBUG_FUNCTION
             cout << "Error in " << __FUNCTION__ << endl;
 #endif
-            throw ParserException(m_text, m_index);
+            throw ParserException(m_text, m_index, UnexpectedInput);
             break;
     }
 }
@@ -132,7 +139,7 @@ void Parser::match(char expectedValue)
         cout << "Error in " << __FUNCTION__ << endl;
         cout << "Expected token \"" << expectedValue << "\" at position " << m_index << endl;
 #endif
-        throw ParserException(m_text, m_index);
+        throw ParserException(m_text, m_index, UnexpectedInput);
     }
 }
 
@@ -209,6 +216,6 @@ void Parser::getToken()
 #ifdef DEBUG_FUNCTION
         cout << "Error in " << __FUNCTION__ << endl;
 #endif
-        throw ParserException(m_text, m_index);
+        throw ParserException(m_text, m_index, UnexpectedInput);
     }
 }
