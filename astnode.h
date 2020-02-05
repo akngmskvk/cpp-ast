@@ -1,7 +1,11 @@
 #ifndef ASTNODE_H
 #define ASTNODE_H
 
+#include <iostream>
+
 #include "astdefines.h"
+
+using namespace std;
 
 class ASTNode
 {
@@ -20,6 +24,9 @@ public:
 
     ASTNode *getRightChild() const;
     void setRightChild(ASTNode *value);
+
+    void print2DUtil(ASTNode* root, int space);
+    void print2D();
 
 private:
     ASTNodeType nodeType;
