@@ -2,51 +2,10 @@
 #include <iostream>
 #include <string>
 
+#include "evaluator.h"
 #include "parser.h"
 
 using namespace std;
-
-double evaluator(ASTNode* ast)
-{
-    if (ast == NULL)
-    {
-        cout << "Null error" << endl;
-        return -1;
-    }
-    if (ast->getNodeType() == NumberValue)
-    {
-        return ast->getNodeValue();
-    }
-    else
-    {
-        double v1 = evaluator(ast->getLeftChild());
-        double v2 = evaluator(ast->getRightChild());
-
-        switch (ast->getNodeType())
-        {
-            case OperatorPlus:
-            {
-                return v1 + v2;
-            }
-            case OperatorMinus:
-            {
-                return v1 - v2;
-            }
-            case OperatorMul:
-            {
-                return v1 * v2;
-            }
-            case OperatorDiv:
-            {
-                return v1 / v2;
-            }
-            default:
-                break;
-        }
-    }
-
-    return -1;
-}
 
 void test(string text)
 {
@@ -54,13 +13,24 @@ void test(string text)
     try
     {
         ASTNode* node = m_parser.parseTest();
-        cout << "\"" << text << "\" -->\t OK --> Result: " << (int)evaluator(node) << endl;
+
+        try
+        {
+            Evaluator evalutor;
+            cout << "⚫ " << text << " = " << evalutor.evaluate(node) << endl;
+        }
+        catch (EvaluatorException& ex)
+        {
+
+        }
+
+        // print the representation of AST
 //        node->print2D();
         delete node;
     }
     catch (ParserException& ex)
     {
-//        cout << "\"" << text << "\" -->\t NOK" << endl;
+
     }
 }
 
@@ -68,36 +38,25 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    test("4+5+7/2");
     test("(4 + 5 * (7 - 3)) - 2");
+    test("4+5+7/2");
     test("10 + 1");
     test("-10");
-    cout << endl;
-    cout << endl;
 
-    test("1+2+3+4");
-    test("1*2*3*4");
-    test("1-2-3-4");
-    test("1/2/3/4");
-    test("1*2+3*4");
-    test("1+2*3+4");
-    test("(1+2)*(3+4)");
-    test("1+(2*3)*(4+5)");
-    test("1+(2*3)/4+5");
-    test("5/(4+3,4)/2");
-    test("1 + 2.5");
-    test("125");
-    test("-1");
-    test("-1+(-2)");
-    test("-1+(-2.0)");
+    cout << endl << endl;
 
-    test("   1*2,5");
-    test("   1*2.5e2");
-    test("M1 + 2.5");
-    test("1 + 2&5");
-    test("1 * 2.5.6");
-    test("1 ** 2.5");
-    test("*1 / 2.5");
+    test("3 + (7-2) * 4 / 2");
+    test("12 - 1");
+    test("1.5 + 2");
+    test("2 + (-1)");
+    test("1*5+1+1");
+    test("8/(2*2)+3");
+    test("130");
+    test("-130");
+    test("   2*9/3");
+    test("2**2");
+    test("M2 +4");
+    test("9");
 
     return a.exec();
 }

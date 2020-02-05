@@ -23,7 +23,7 @@ ASTNode* Parser::expression()
     ASTNode* termNode = term();
     ASTNode* expression1Node = expression1();
 
-    return createNode(OperatorPlus, termNode, expression1Node);
+    return createNode(ASTNodeType::OperatorPlus, termNode, expression1Node);
 }
 
 ASTNode* Parser::expression1()
@@ -33,21 +33,21 @@ ASTNode* Parser::expression1()
 
     switch (m_token.Type)
     {
-        case Plus:
+        case TokenType::Plus:
         {
             getToken();
             termNode = term();
             expression1Node = expression1();
 
-            return createNode(OperatorPlus, expression1Node, termNode);
+            return createNode(ASTNodeType::OperatorPlus, expression1Node, termNode);
         }
-        case Minus:
+        case TokenType::Minus:
         {
             getToken();
             termNode = term();
             expression1Node = expression1();
 
-            return createNode(OperatorMinus, expression1Node, termNode);
+            return createNode(ASTNodeType::OperatorMinus, expression1Node, termNode);
         }
         default:
             break;
@@ -61,7 +61,7 @@ ASTNode* Parser::term()
     ASTNode* factorNode = factor();
     ASTNode* term1Node = term1();
 
-    return createNode(OperatorMul, factorNode, term1Node);
+    return createNode(ASTNodeType::OperatorMul, factorNode, term1Node);
 }
 
 ASTNode* Parser::term1()
@@ -71,21 +71,21 @@ ASTNode* Parser::term1()
 
     switch (m_token.Type)
     {
-        case Mul:
+        case TokenType::Mul:
         {
             getToken();
             factorNode = factor();
             term1Node = term1();
 
-            return createNode(OperatorMul, term1Node, factorNode);
+            return createNode(ASTNodeType::OperatorMul, term1Node, factorNode);
         }
-        case Div:
+        case TokenType::Div:
         {
             getToken();
             factorNode = factor();
             term1Node = term1();
 
-            return createNode(OperatorDiv, term1Node, factorNode);
+            return createNode(ASTNodeType::OperatorDiv, term1Node, factorNode);
         }
         default:
             break;
@@ -100,7 +100,7 @@ ASTNode* Parser::factor()
 
     switch (m_token.Type)
     {
-        case LeftParenthesis:
+        case TokenType::LeftParenthesis:
         {
             getToken();
             node = expression();
@@ -108,22 +108,22 @@ ASTNode* Parser::factor()
 
             return node;
         }
-        case Minus:
+        case TokenType::Minus:
         {
             getToken();
             // negative input is explored
-            throw ParserException(m_text, m_index, NegativeInput);
+            throw ParserException(m_text, m_index, ParserExceptionType::NegativeInput);
             factor();
             break;
         }
-        case Number:
+        case TokenType::Number:
         {
             int value = m_token.Value;
             getToken();
             // large input is explored
-            if (m_token.Type == Number)
+            if (m_token.Type == TokenType::Number)
             {
-                throw ParserException(m_text, m_index, LargeInput);
+                throw ParserException(m_text, m_index, ParserExceptionType::LargeInput);
             }
 
             return createNumberNode(value);
@@ -131,7 +131,7 @@ ASTNode* Parser::factor()
         default:
         {
             // unexpected token is explored
-            throw ParserException(m_text, m_index, UnexpectedInput);
+            throw ParserException(m_text, m_index, ParserExceptionType::UnexpectedInput);
             break;
         }
     }
@@ -146,7 +146,7 @@ void Parser::match(char expectedValue)
     else
     {
         // unexpected token is explored
-        throw ParserException(m_text, m_index, UnexpectedInput);
+        throw ParserException(m_text, m_index, ParserExceptionType::UnexpectedInput);
     }
 }
 
@@ -163,7 +163,7 @@ ASTNode* Parser::createNode(ASTNodeType nodeType, ASTNode *leftChild, ASTNode *r
 ASTNode* Parser::createNumberNode(int nodeValue)
 {
     ASTNode* node = new ASTNode;
-    node->setNodeType(NumberValue);
+    node->setNodeType(ASTNodeType::NumberValue);
     node->setNodeValue(nodeValue);
 
     return node;
@@ -174,7 +174,7 @@ void Parser::getToken()
      // check for end of the text
      if (m_index == m_text.size())
      {
-         m_token.Type = EndOfText;
+         m_token.Type = TokenType::EndOfText;
          return;
      }
 
@@ -190,40 +190,40 @@ void Parser::getToken()
     // check if there is a digit at the current index
     if(isdigit(m_text.at(m_index)))
     {
-        m_token.Type = Number;
+        m_token.Type = TokenType::Number;
         m_token.Value = toIntFromChar(m_text.at(m_index));
         m_index++;
         return;
     }
 
-    m_token.Type = Error;
+    m_token.Type = TokenType::Error;
 
     // check if there is an operator or paranthesis at the current index
     switch (m_text[m_index])
     {
         case '+':
-            m_token.Type = Plus;
+            m_token.Type = TokenType::Plus;
             break;
         case '-':
-            m_token.Type = Minus;
+            m_token.Type = TokenType::Minus;
             break;
         case '*':
-            m_token.Type = Mul;
+            m_token.Type = TokenType::Mul;
             break;
         case '/':
-            m_token.Type = Div;
+            m_token.Type = TokenType::Div;
             break;
         case '(':
-            m_token.Type = LeftParenthesis;
+            m_token.Type = TokenType::LeftParenthesis;
             break;
         case ')':
-            m_token.Type = RightParenthesis;
+            m_token.Type = TokenType::RightParenthesis;
             break;
         default:
             break;
     }
 
-    if (m_token.Type != Error)
+    if (m_token.Type != TokenType::Error)
     {
         m_token.Symbol = m_text.at(m_index);
         m_index++;
@@ -231,6 +231,6 @@ void Parser::getToken()
     else
     {
         // unexpected token is explored
-        throw ParserException(m_text, m_index, UnexpectedInput);
+        throw ParserException(m_text, m_index, ParserExceptionType::UnexpectedInput);
     }
 }

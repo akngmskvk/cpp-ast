@@ -4,7 +4,7 @@
 
 ASTNode::ASTNode()
 {
-    this->nodeType = Undefined;
+    this->nodeType = ASTNodeType::Undefined;
     this->nodeValue = 0;
     this->leftChild = nullptr;
     this->rightChild = nullptr;
@@ -76,23 +76,23 @@ void ASTNode::print2DUtil(ASTNode *root, int space)
     {
         cout << " ";
     }
-    if (root->getNodeType() == NumberValue)
+    if (root->getNodeType() == ASTNodeType::NumberValue)
     {
         cout << root->getNodeValue() << endl;
     }
     else
     {
         switch (root->getNodeType()) {
-        case OperatorPlus:
+        case ASTNodeType::OperatorPlus:
             cout << "+" << endl;
             break;
-        case OperatorMinus:
+        case ASTNodeType::OperatorMinus:
             cout << "-" << endl;
             break;
-        case OperatorMul:
+        case ASTNodeType::OperatorMul:
             cout << "*" << endl;
             break;
-        case OperatorDiv:
+        case ASTNodeType::OperatorDiv:
             cout << "/" << endl;
             break;
         default:
@@ -107,6 +107,11 @@ void ASTNode::print2DUtil(ASTNode *root, int space)
 // Wrapper over print2DUtil()
 void ASTNode::print2D()
 {
+    cout << "2D Representation of AST" << endl;
+    cout << "--------------------------------" << endl << endl;
+
     // Pass initial space count as 0
     print2DUtil(this, 0);
+
+    cout << "--------------------------------" << endl << endl;
 }
