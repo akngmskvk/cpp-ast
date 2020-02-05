@@ -54,7 +54,8 @@ void test(string text)
     try
     {
         ASTNode* node = m_parser.parseTest();
-        cout << "\"" << text << "\" -->\t OK --> Result: " << evaluator(node) << endl;
+        cout << "\"" << text << "\" -->\t OK --> Result: " << (int)evaluator(node) << endl;
+//        node->print2D();
         delete node;
     }
     catch (ParserException& ex)

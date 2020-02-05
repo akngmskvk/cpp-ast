@@ -1,7 +1,5 @@
 #include "parser.h"
 
-//#define DEBUG_FUNCTION 1
-
 Parser::Parser(string inputStr)
 {
     m_text = inputStr;
@@ -22,10 +20,6 @@ int Parser::toIntFromChar(char value)
 
 ASTNode* Parser::expression()
 {
-#ifdef DEBUG_FUNCTION
-     cout << "Beginnig of the " << __FUNCTION__ << endl;
-#endif
-
     ASTNode* termNode = term();
     ASTNode* expression1Node = expression1();
 
@@ -34,10 +28,6 @@ ASTNode* Parser::expression()
 
 ASTNode* Parser::expression1()
 {
-#ifdef DEBUG_FUNCTION
-     cout << "Beginnig of the " << __FUNCTION__ << endl;
-#endif
-
     ASTNode* termNode;
     ASTNode* expression1Node;
 
@@ -68,10 +58,6 @@ ASTNode* Parser::expression1()
 
 ASTNode* Parser::term()
 {
-#ifdef DEBUG_FUNCTION
-     cout << "Beginnig of the " << __FUNCTION__ << endl;
-#endif
-
     ASTNode* factorNode = factor();
     ASTNode* term1Node = term1();
 
@@ -80,10 +66,6 @@ ASTNode* Parser::term()
 
 ASTNode* Parser::term1()
 {
-#ifdef DEBUG_FUNCTION
-     cout << "Beginnig of the " << __FUNCTION__ << endl;
-#endif
-
     ASTNode* factorNode;
     ASTNode* term1Node;
 
@@ -114,10 +96,6 @@ ASTNode* Parser::term1()
 
 ASTNode* Parser::factor()
 {
-#ifdef DEBUG_FUNCTION
-     cout << "Beginnig of the " << __FUNCTION__ << endl;
-#endif
-
     ASTNode* node;
 
     switch (m_token.Type)
@@ -153,9 +131,6 @@ ASTNode* Parser::factor()
         default:
         {
             // unexpected token is explored
-#ifdef DEBUG_FUNCTION
-            cout << "Error in " << __FUNCTION__ << endl;
-#endif
             throw ParserException(m_text, m_index, UnexpectedInput);
             break;
         }
@@ -164,10 +139,6 @@ ASTNode* Parser::factor()
 
 void Parser::match(char expectedValue)
 {
-#ifdef DEBUG_FUNCTION
-     cout << "Beginnig of the " << __FUNCTION__ << endl;
-#endif
-
     if (m_text.at(m_index-1) == expectedValue)
     {
         getToken();
@@ -175,10 +146,6 @@ void Parser::match(char expectedValue)
     else
     {
         // unexpected token is explored
-#ifdef DEBUG_FUNCTION
-        cout << "Error in " << __FUNCTION__ << endl;
-        cout << "Expected token \"" << expectedValue << "\" at position " << m_index << endl;
-#endif
         throw ParserException(m_text, m_index, UnexpectedInput);
     }
 }
@@ -204,20 +171,12 @@ ASTNode* Parser::createNumberNode(int nodeValue)
 
 void Parser::getToken()
 {
-#ifdef DEBUG_FUNCTION
-     cout << "Beginnig of the " << __FUNCTION__ << endl;
-#endif
-
      // check for end of the text
      if (m_index == m_text.size())
      {
          m_token.Type = EndOfText;
          return;
      }
-
-#ifdef DEBUG_FUNCTION
-    cout << "Value in " << __FUNCTION__ << " is " << m_text.at(m_index) << endl;
-#endif
 
     // skip whitespaces
     while (isspace(m_text.at(m_index)))
@@ -272,9 +231,6 @@ void Parser::getToken()
     else
     {
         // unexpected token is explored
-#ifdef DEBUG_FUNCTION
-        cout << "Error in " << __FUNCTION__ << endl;
-#endif
         throw ParserException(m_text, m_index, UnexpectedInput);
     }
 }

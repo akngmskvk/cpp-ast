@@ -1,16 +1,16 @@
 #include "parserexception.h"
 
-ParserException::ParserException(const string &message, size_t pos, ExceptionType type)
+ParserException::ParserException(const string &message, size_t pos, ParserExceptionType type)
 {
     switch (type)
     {
-        case ExceptionType::LargeInput:
+        case ParserExceptionType::LargeInput:
             cout << "The input '" << message << "' is invalid (literal is too large)" << endl;
             break;
-        case ExceptionType::NegativeInput:
+        case ParserExceptionType::NegativeInput:
             cout << "The input '" << message << "' is invalid (either negative literal or unary minus)" << endl;
             break;
-        case ExceptionType::UnexpectedInput:
+        case ParserExceptionType::UnexpectedInput:
             cout << "The input '" << message << "' is invalid (unexpected token)" << endl;
             break;
         default:

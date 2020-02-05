@@ -5,7 +5,7 @@
 
 using namespace std;
 
-enum ExceptionType
+enum ParserExceptionType
 {
     LargeInput,
     NegativeInput,
@@ -15,7 +15,7 @@ enum ExceptionType
 class ParserException : public exception
 {
 public:
-    ParserException(const string& message, size_t pos, ExceptionType type);
+    ParserException(const string& message, size_t pos, ParserExceptionType type);
 };
 
 #endif // PARSEREXCEPTION_H
